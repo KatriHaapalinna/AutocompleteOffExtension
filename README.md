@@ -4,7 +4,7 @@ AutocompleteOff Extension is an extension for Vaadin 7 and 8. It can be used to 
 
 ## Download release
 
-Official releases of this add-on are available at Vaadin Directory. For Maven instructions, download and reviews, go to http://vaadin.com/directory/component/autocomplete-off-extension
+Official releases of this add-on are available at Vaadin Directory. For Maven instructions, download and reviews, go to https://vaadin.com/directory/component/autocompleteoff-extension-add-on
 
 ## Building and running demo
 
