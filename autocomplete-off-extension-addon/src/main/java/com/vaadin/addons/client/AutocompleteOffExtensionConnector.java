@@ -24,7 +24,16 @@ public class AutocompleteOffExtensionConnector
         if (target instanceof AbstractDateFieldConnector) {
             VDateField field;
             field = ((AbstractDateFieldConnector) target).getWidget();
-            if (BrowserInfo.get().isChrome()) {
+
+            if (getState().useRandomNumber) {
+                field.getElement().getFirstChildElement()
+                        .setAttribute("autocomplete", Math.random() + "");
+            } else if (getState().attributeValue!=null) {
+                field.getElement().getFirstChildElement()
+                        .setAttribute("autocomplete",
+                                getState().attributeValue);
+            }
+            else if (BrowserInfo.get().isChrome()) {
                 field.getElement().getFirstChildElement()
                         .setAttribute("autocomplete", "off");
             } else {
@@ -35,7 +44,14 @@ public class AutocompleteOffExtensionConnector
             Widget field;
             field = ((AbstractFieldConnector) target).getWidget();
 
-            if (BrowserInfo.get().isChrome()) {
+            if (getState().useRandomNumber) {
+                field.getElement().setAttribute("autocomplete",
+                        Math.random() + "");
+            } else if (getState().attributeValue!=null) {
+                field.getElement().setAttribute("autocomplete",
+                        getState().attributeValue);
+            }
+            else if (BrowserInfo.get().isChrome()) {
                 field.getElement().setAttribute("autocomplete", "off");
             } else {
                 field.getElement().setAttribute("autocomplete",
@@ -45,4 +61,8 @@ public class AutocompleteOffExtensionConnector
 
     }
 
+    @Override
+    public AutocompleteOffExtensionState getState() {
+        return (AutocompleteOffExtensionState)super.getState();
+    }
 }

@@ -19,11 +19,7 @@ import com.vaadin.data.validator.DateRangeValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.*;
 
 @Theme("demo")
 @Title("AutocompleteOffExtension Demo")
@@ -37,6 +33,18 @@ public class DemoUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.setWidth("100%");
+        hl.setSpacing(true);
+
+        hl.addComponent(createFormLayout("Use default configuration", false, null));
+        hl.addComponent(createFormLayout("Random number for autocomplete attribute", true, null));
+        hl.addComponent(createFormLayout("Manual autocomplete attribute value", false, "test"));
+
+        setContent(hl);
+    }
+
+    private FormLayout createFormLayout(String caption, boolean useRandomAttributeValue, String manualAttributeValue) {
         Binder<Person> binder = new Binder<>(Person.class);
 
         TextField t1 = new TextField("Required");
@@ -49,8 +57,16 @@ public class DemoUI extends UI {
         df.setPlaceholder("Date something");
 
         // set autocomplete off attribute for t2 and df
-        AutocompleteOffExtension.setAutocompleteOff(t2);
-        AutocompleteOffExtension.setAutocompleteOff(df);
+        if (useRandomAttributeValue) {
+            AutocompleteOffExtension.setAutocompleteOffWithRandomNumber(t2);
+            AutocompleteOffExtension.setAutocompleteOffWithRandomNumber(df);
+        } else if (manualAttributeValue!=null) {
+            AutocompleteOffExtension.setAutocompleteOffWithManualValue(t2, manualAttributeValue);
+            AutocompleteOffExtension.setAutocompleteOffWithManualValue(df, manualAttributeValue);
+        } else {
+            AutocompleteOffExtension.setAutocompleteOff(t2);
+            AutocompleteOffExtension.setAutocompleteOff(df);
+        }
 
         // bind fields with validators to test nothing breaks
         binder.forField(t1).asRequired("You need to do this")
@@ -73,7 +89,7 @@ public class DemoUI extends UI {
                 .withConverter(new Converter<LocalDate, Date>() {
                     @Override
                     public Result<Date> convertToModel(LocalDate value,
-                            ValueContext context) {
+                                                       ValueContext context) {
                         Date date = Date
                                 .from(value.atStartOfDay(ZoneId.systemDefault())
                                         .toInstant());
@@ -98,10 +114,11 @@ public class DemoUI extends UI {
         binder.setBean(new Person("Lorem", "Ipsum", c.getTime()));
 
         final FormLayout layout = new FormLayout();
+        layout.setCaption(caption);
         layout.setStyleName("demoContentLayout");
         layout.setSizeFull();
         layout.addComponents(t1, t2, df, label);
-        setContent(layout);
+        return layout;
     }
 
 }
